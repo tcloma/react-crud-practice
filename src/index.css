@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+.logo {
+   @apply w-20 animate-pulse duration-300 hover:scale-110 lg:w-40;
+}
