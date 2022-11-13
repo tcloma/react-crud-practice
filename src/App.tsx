@@ -1,6 +1,7 @@
 import { FC, useRef } from 'react'
-import { createPost, deletePost } from './api/postsApi'
-import { useGetPosts } from './hooks/useGetPosts'
+import { createPost, deletePost, updatePost } from './api/postsApi'
+import { PostShape, useGetPosts } from './hooks/useGetPosts'
+import PostCard from './components/PostCard'
 
 const App: FC = () => {
    const { posts, setPosts, isLoading } = useGetPosts()
@@ -9,9 +10,8 @@ const App: FC = () => {
    const titleRef = useRef<HTMLInputElement>(null)
    const contentRef = useRef<HTMLTextAreaElement>(null)
 
-   function handleClick() {
+   function handleCreateClick() {
       const postData = {
-         id: posts.length + 1,
          title: titleRef.current!.value,
          content: contentRef.current!.value,
       }
@@ -19,10 +19,20 @@ const App: FC = () => {
       createPost(postData)
    }
 
-   function handleDeleteClick(postId: number) {
-      const filteredPosts = posts.filter(post => post.id !== postId)
+   function handleDeleteClick(postId: string) {
+      const filteredPosts = posts.filter((post) => post.id !== postId)
       setPosts(filteredPosts)
       deletePost(postId)
+   }
+
+   function handleUpdateClick(postId: string, postData: PostShape) {
+      const filteredPosts = posts.map((post) => {
+         if (post.id === postId) {
+            return postData
+         } else return post
+      })
+      setPosts(filteredPosts)
+      updatePost(postId, postData)
    }
 
    return (
@@ -39,22 +49,23 @@ const App: FC = () => {
          />
          <button
             className='w-1/3 rounded-md bg-zinc-900 px-8 py-4'
-            onClick={handleClick}
+            onClick={handleCreateClick}
          >
             Create note
          </button>
-         <div className='flex flex-row gap-4'>
-            {posts.map((post) => (
-               <div
-                  key={post.id}
-                  onClick={() => handleDeleteClick(post.id)}
-                  className='flex flex-col items-center rounded-md bg-white p-8 text-black'
-               >
-                  <h2 className='text-xl'>{post.title}</h2>
-                  <p>{post.content}</p>
-               </div>
-            ))}
-         </div>
+         {isLoading ? (
+            <h3>Loading...</h3>
+         ) : (
+            <div className='flex flex-row justify-center gap-4'>
+               {posts.map((post) => (
+                  <PostCard
+                     post={post}
+                     handleDeleteClick={handleDeleteClick}
+                     handleUpdateClick={handleUpdateClick}
+                  />
+               ))}
+            </div>
+         )}
       </div>
    )
 }

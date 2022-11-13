@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { getPosts } from "../api/postsApi"
 
 export interface PostShape {
-   id: number,
+   id?: string,
    title: string,
    content: string
 }
@@ -16,6 +16,8 @@ export const useGetPosts = () => {
          const response = await getPosts()
          setPosts(response)
          setIsLoading(false)
+         // setTimeout(() => {
+         // }, 3000)
       }
       fetchData()
    }, [])
