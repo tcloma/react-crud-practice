@@ -1,6 +1,7 @@
 import { PostShape } from '../hooks/useGetPosts'
 
-const baseUrl = 'http://127.0.0.1:8090/api/collections/posts/records'
+const baseUrl =
+   'https://pocketbase-crud-test-tcloma.fly.dev/api/collections/posts/records'
 
 export const getPosts = async () => {
    const response = await fetch(baseUrl)
